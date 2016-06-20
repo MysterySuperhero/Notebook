@@ -20,4 +20,9 @@
         </activity>
     </application>
 
+    <provider
+        android:name=".database.DBContentProvider"
+        android:authorities="com.mysterysuperhero.notebook.database.DBContentProvider"
+        android:exported="false"/>
+
 </manifest>
