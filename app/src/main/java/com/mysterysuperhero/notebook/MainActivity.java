@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                                         buildAddNoteDialog();
                                         break;
                                     case 1:
+                                        buildAddCategoryDialog();
                                         break;
                                     default:
                                         break;
@@ -81,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
                 }).build();
 
         positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
-        //noinspection ConstantConditions
         nameEditText = (EditText) dialog.getCustomView().findViewById(R.id.addNoteDialogNameEditText);
         noteEditText = (EditText) dialog.getCustomView().findViewById(R.id.addNoteDialogNoteEditText);
 
@@ -117,6 +117,46 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+    }
+
+    private void buildAddCategoryDialog() {
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title(R.string.action_add_category_title)
+                .customView(R.layout.add_category_dialog, true)
+                .positiveText(R.string.action_add_positive)
+                .negativeText(android.R.string.cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        System.out.println("!!!!!!ДОБАВЛЕНО!!!!!!!");
+                    }
+                }).build();
+
+        positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
+        nameEditText = (EditText) dialog.getCustomView().findViewById(R.id.addCategoryDialogNameEditText);
+
+        nameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                positiveAction.setEnabled(s.toString().trim().length() > 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        int widgetColor = ThemeSingleton.get().widgetColor;
+
+        MDTintHelper.setTint(nameEditText,
+                widgetColor == 0 ? ContextCompat.getColor(this, R.color.colorAccent) : widgetColor);
+
+        dialog.show();
+        positiveAction.setEnabled(false); // disabled by default
     }
 
     @Override
