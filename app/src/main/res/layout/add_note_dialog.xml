@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/addNoteDialogNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/secondaryText"
+        android:text="@string/action_add_note_name"/>
+
+    <EditText
+        android:id="@+id/addNoteDialogNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="2"/>
+
+
+    <TextView
+        android:id="@+id/addNoteDialogNoteTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/secondaryText"
+        android:text="@string/action_add_note_note"/>
+
+    <EditText
+        android:id="@+id/addNoteDialogNoteEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="8"/>
+
+</LinearLayout>
