@@ -1,33 +1,39 @@
 package com.mysterysuperhero.notebook;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
-import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.internal.MDTintHelper;
 import com.afollestad.materialdialogs.internal.ThemeSingleton;
+import com.mysterysuperhero.notebook.database.DataBaseContract;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private View positiveAction;
     private EditText nameEditText;
     private EditText noteEditText;
+
+    private static final String DEFAULT_COLOR = "#FF4081";
+    public static final int NOTES_LOADER = 0;
+    public static final int CATEGORIES_LOADER = 1;
 
 
     @Override
@@ -39,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         initFloatingActionButton(fab);
+
+        getSupportLoaderManager().initLoader(NOTES_LOADER, null, this);
+        getSupportLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
     }
 
     private void initFloatingActionButton(FloatingActionButton button) {
@@ -77,7 +86,12 @@ public class MainActivity extends AppCompatActivity {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        System.out.println("!!!!!!ДОБАВЛЕНО!!!!!!!");
+                        ContentValues values = new ContentValues();
+                        values.put(DataBaseContract.Notes.COLUMN_NAME_NAME, nameEditText.getText().toString());
+                        values.put(DataBaseContract.Notes.COLUMN_NAME_TEXT, noteEditText.getText().toString());
+                        values.put(DataBaseContract.Notes.COLUMN_NAME_COLOR, DEFAULT_COLOR);
+
+                        getContentResolver().insert(DataBaseContract.Notes.CONTENT_URI, values);
                     }
                 }).build();
 
@@ -179,5 +193,47 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri CONTACT_URI = null;
+        switch (id) {
+            case NOTES_LOADER:
+                CONTACT_URI = DataBaseContract.Notes.CONTENT_URI;
+                break;
+            case CATEGORIES_LOADER:
+                CONTACT_URI = DataBaseContract.Categories.CONTENT_URI;
+                break;
+            default:
+                break;
+        }
+        return new CursorLoader(this, CONTACT_URI, null,
+                null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (cursor != null) {
+            switch (loader.getId()) {
+                case NOTES_LOADER:
+                    if (cursor.moveToFirst()) {
+                        System.out.println("Notes cursor loaded!");
+                    }
+                    break;
+                case CATEGORIES_LOADER:
+                    if (cursor.moveToFirst()) {
+                        System.out.println("Categories cursor loaded!");
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }

@@ -1,0 +1,2 @@
+adb -d shell "run-as com.mysterysuperhero.notebook ls /data/data/com.mysterysuperhero.notebook/databases/"
+adb -d shell "run-as com.mysterysuperhero.notebook cat /data/data/com.mysterysuperhero.notebook/databases/notebook.db > /sdcard/notebook.db"

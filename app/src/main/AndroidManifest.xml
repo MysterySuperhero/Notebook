@@ -18,11 +18,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".database.DBContentProvider"
+            android:authorities="com.mysterysuperhero.notebook.database.DBContentProvider"
+            android:exported="false"/>
+
     </application>
 
-    <provider
-        android:name=".database.DBContentProvider"
-        android:authorities="com.mysterysuperhero.notebook.database.DBContentProvider"
-        android:exported="false"/>
+
 
 </manifest>
