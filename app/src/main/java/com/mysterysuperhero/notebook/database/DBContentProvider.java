@@ -79,7 +79,7 @@ public class DBContentProvider extends ContentProvider {
             case 1: // NOTES
                 qb.setTables(DataBaseContract.Notes.TABLE_NAME);
                 qb.setProjectionMap(notesProjection);
-                orderBy = DataBaseContract.Notes._ID + " ASC";
+                orderBy = DataBaseContract.Notes._ID + " ASC LIMIT 100";
                 if (selectionArgs != null) {
                     qb.appendWhere(DataBaseContract.Notes._ID + "= ?");
                 }

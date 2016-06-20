@@ -142,7 +142,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        System.out.println("!!!!!!ДОБАВЛЕНО!!!!!!!");
+                        ContentValues values = new ContentValues();
+                        values.put(DataBaseContract.Categories.COLUMN_NAME_NAME, nameEditText.getText().toString());
+                        values.put(DataBaseContract.Notes.COLUMN_NAME_COLOR, DEFAULT_COLOR);
+
+                        getContentResolver().insert(DataBaseContract.Categories.CONTENT_URI, values);
                     }
                 }).build();
 
@@ -219,11 +223,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 case NOTES_LOADER:
                     if (cursor.moveToFirst()) {
                         System.out.println("Notes cursor loaded!");
+                        do {
+                            System.out.println(cursor.getString(cursor.getColumnIndex(
+                                    DataBaseContract.Notes.COLUMN_NAME_TEXT
+                            )));
+                        } while (cursor.moveToNext());
                     }
                     break;
                 case CATEGORIES_LOADER:
                     if (cursor.moveToFirst()) {
                         System.out.println("Categories cursor loaded!");
+                        do {
+                            System.out.println(cursor.getString(cursor.getColumnIndex(
+                                    DataBaseContract.Categories.COLUMN_NAME_NAME
+                            )));
+                        } while (cursor.moveToNext());
                     }
                     break;
                 default:
