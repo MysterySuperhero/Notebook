@@ -18,18 +18,23 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.GridView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.internal.MDTintHelper;
 import com.afollestad.materialdialogs.internal.ThemeSingleton;
 import com.mysterysuperhero.notebook.database.DataBaseContract;
+import com.mysterysuperhero.notebook.utils.Note;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private View positiveAction;
     private EditText nameEditText;
     private EditText noteEditText;
+    private GridView notesView;
 
     private static final String DEFAULT_COLOR = "#FF4081";
     public static final int NOTES_LOADER = 0;
@@ -48,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         getSupportLoaderManager().initLoader(NOTES_LOADER, null, this);
         getSupportLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
+
+        notesView = (GridView) findViewById(R.id.notesGridView);
+        notesView.setAdapter(new NotesAdapter(this, new ArrayList<Note>()));
     }
 
     private void initFloatingActionButton(FloatingActionButton button) {
@@ -223,11 +231,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 case NOTES_LOADER:
                     if (cursor.moveToFirst()) {
                         System.out.println("Notes cursor loaded!");
+                        ArrayList<Note> notes = new ArrayList<>();
                         do {
                             System.out.println(cursor.getString(cursor.getColumnIndex(
                                     DataBaseContract.Notes.COLUMN_NAME_TEXT
                             )));
+                            notes.add(new Note(
+                                    cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes.COLUMN_NAME_NAME)),
+                                    cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes.COLUMN_NAME_TEXT)),
+                                    cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes.COLUMN_NAME_COLOR))
+                            ));
                         } while (cursor.moveToNext());
+                        ((NotesAdapter) this.notesView.getAdapter()).addToNotes(notes);
+                        ((NotesAdapter) this.notesView.getAdapter()).notifyDataSetChanged();
                     }
                     break;
                 case CATEGORIES_LOADER:
