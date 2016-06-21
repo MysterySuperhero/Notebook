@@ -49,7 +49,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                fragment.buildChangeNoteDialog(categories.get(position), CategoriesAdapter.this);
+                fragment.buildChangeCategoryDialog(categories.get(position), CategoriesAdapter.this);
             }
         });
 
@@ -84,4 +84,12 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
         this.categories.addAll(newNotes);
     }
 
+    public void removeItemById(String id) {
+        for(int i = 0; i < categories.size(); i++) {
+            if (categories.get(i).getId().equals(id)) {
+                categories.remove(i);
+                break;
+            }
+        }
+    }
 }

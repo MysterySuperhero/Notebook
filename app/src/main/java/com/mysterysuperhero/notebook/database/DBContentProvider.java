@@ -175,9 +175,13 @@ public class DBContentProvider extends ContentProvider {
         int count;
         String u = uri.getScheme() + "://" + uri.getHost() + uri.getPath();
         switch (sUriMatcher.get(u)) {
-            case 1: // MYSUBSCRIBES
+            case 1: // NOTES
                 finalWhere = selection;
                 count = db.delete(DataBaseContract.Notes.TABLE_NAME, finalWhere, selectionArgs);
+                break;
+            case 2: // CATEGORIES
+                finalWhere = selection;
+                count = db.delete(DataBaseContract.Categories.TABLE_NAME, finalWhere, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);

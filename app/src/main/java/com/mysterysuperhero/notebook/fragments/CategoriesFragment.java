@@ -28,6 +28,7 @@ import com.mysterysuperhero.notebook.events.CategoriesLoadedEvent;
 import com.mysterysuperhero.notebook.events.ColorChoseEvent;
 import com.mysterysuperhero.notebook.utils.Category;
 import com.mysterysuperhero.notebook.utils.FragmentsVisiblity;
+import com.mysterysuperhero.notebook.utils.Note;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -137,6 +138,68 @@ public class CategoriesFragment extends Fragment implements FragmentsVisiblity {
                 .titleSub(R.string.colors)
                 .preselect(((MainActivity) getActivity()).primaryPreselect)
                 .show();
+    }
+
+    public void buildChangeCategoryDialog(final Category category, final CategoriesAdapter adapter) {
+        MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                .title(R.string.action_change_note_title)
+                .customView(R.layout.add_category_dialog, true)
+                .positiveText(R.string.action_change_save)
+                .negativeText(android.R.string.cancel)
+                .neutralText(R.string.action_change_delete)
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        String[] selectionArgs = { category.getId() };
+                        getActivity().getContentResolver().delete(DataBaseContract.Categories.CONTENT_URI,
+                                DataBaseContract.Categories._ID + " = ? ", selectionArgs);
+                        adapter.removeItemById(category.getId());
+                        adapter.notifyDataSetChanged();
+                        itemsCount--;
+                    }
+                } )
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        ContentValues values = new ContentValues();
+                        values.put(DataBaseContract.Notes.COLUMN_NAME_NAME, nameEditText.getText().toString());
+                        values.put(DataBaseContract.Notes.COLUMN_NAME_COLOR, MainActivity.DEFAULT_COLOR);
+
+                        String[] selectionArgs = { category.getId() };
+                        getActivity().getContentResolver().update(DataBaseContract.Categories.CONTENT_URI, values,
+                                DataBaseContract.Categories._ID + " = ? ", selectionArgs);
+                        category.setName(nameEditText.getText().toString());
+                        adapter.notifyDataSetChanged();
+                    }
+                }).build();
+
+
+        positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
+        nameEditText = (EditText) dialog.getCustomView().findViewById(R.id.addCategoryDialogNameEditText);
+        nameEditText.setText(category.getName());
+
+        nameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                positiveAction.setEnabled(s.toString().trim().length() > 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        int widgetColor = ThemeSingleton.get().widgetColor;
+
+        MDTintHelper.setTint(nameEditText,
+                widgetColor == 0 ? ContextCompat.getColor(getActivity(), R.color.colorAccent) : widgetColor);
+
+        dialog.show();
+        positiveAction.setEnabled(false); // disabled by default
     }
 
     @Subscribe
