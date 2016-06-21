@@ -7,7 +7,8 @@
     <string name="action_add_category">Категория</string>
 
     <string name="action_add_positive">Добавить</string>
-    <string name="action_change_positive">Сохранить</string>
+    <string name="action_change_save">Сохранить</string>
+    <string name="action_change_delete">Удалить</string>
 
     <string name="action_add_note_title">Добавить заметку</string>
     <string name="action_add_note_name">Название заметки</string>

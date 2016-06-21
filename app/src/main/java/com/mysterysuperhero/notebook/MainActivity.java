@@ -19,10 +19,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.GridView;
-import android.widget.ListView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -55,16 +52,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        notesView = (RecyclerView) findViewById(R.id.notesRecyclerView);
+        notesView.setLayoutManager(new LinearLayoutManager(this));
+        notesView.setItemAnimator(new SlideInUpAnimator());
+        notesView.setAdapter(new NotesAdapter(this, new ArrayList<Note>()));
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         initFloatingActionButton(fab);
 
         getSupportLoaderManager().initLoader(NOTES_LOADER, null, this);
         getSupportLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
-
-        notesView = (RecyclerView) findViewById(R.id.notesRecyclerView);
-        notesView.setLayoutManager(new LinearLayoutManager(this));
-        notesView.setItemAnimator(new SlideInUpAnimator());
-        notesView.setAdapter(new NotesAdapter(this, new ArrayList<Note>()));
     }
 
     private void initFloatingActionButton(FloatingActionButton button) {
@@ -109,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         values.put(DataBaseContract.Notes.COLUMN_NAME_COLOR, DEFAULT_COLOR);
 
                         getContentResolver().insert(DataBaseContract.Notes.CONTENT_URI, values);
+                        itemsCount++;
                     }
                 }).build();
 
@@ -150,12 +148,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
     }
 
-    public void buildChangeNoteDialog(final Note note, final RecyclerView.Adapter adapter) {
+    public void buildChangeNoteDialog(final Note note, final NotesAdapter adapter) {
         MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title(R.string.action_change_note_title)
                 .customView(R.layout.add_note_dialog, true)
-                .positiveText(R.string.action_change_positive)
+                .positiveText(R.string.action_change_save)
                 .negativeText(android.R.string.cancel)
+                .neutralText(R.string.action_change_delete)
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        String[] selectionArgs = { note.getId() };
+                        getContentResolver().delete(DataBaseContract.Notes.CONTENT_URI,
+                                DataBaseContract.Notes._ID + " = ? ", selectionArgs);
+                        adapter.removeItemById(note.getId());
+                        adapter.notifyDataSetChanged();
+                        itemsCount--;
+                    }
+                } )
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -164,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         values.put(DataBaseContract.Notes.COLUMN_NAME_TEXT, noteEditText.getText().toString());
                         values.put(DataBaseContract.Notes.COLUMN_NAME_COLOR, DEFAULT_COLOR);
 
-                        String[] selectionArgs = {note.getId()};
+                        String[] selectionArgs = { note.getId() };
                         getContentResolver().update(DataBaseContract.Notes.CONTENT_URI, values,
                                 DataBaseContract.Notes._ID + " = ? ", selectionArgs);
                         note.setName(nameEditText.getText().toString());
@@ -173,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         adapter.notifyDataSetChanged();
                     }
                 }).build();
+
 
         positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
         nameEditText = (EditText) dialog.getCustomView().findViewById(R.id.addNoteDialogNameEditText);

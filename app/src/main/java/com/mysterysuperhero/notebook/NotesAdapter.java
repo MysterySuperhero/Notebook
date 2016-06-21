@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,46 +29,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         this.notes = notes;
     }
 
-//    @Override
-//    public View getView(final int position, View convertView, ViewGroup parent) {
-//        // TODO Auto-generated method stub
-//
-//        LayoutInflater inflater = (LayoutInflater) context
-//                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//
-//        View view;
-//
-//        if (convertView == null) {
-//
-//            view = new View(context);
-//
-//            view = inflater.inflate(R.layout.notes_item, null);
-//
-//        } else {
-//            view = (View) convertView;
-//        }
-//
-//        TextView nameTextView = (TextView) view.findViewById(R.id.nameTextView);
-//        nameTextView.setText(notes.get(position).getName());
-//
-//        TextView noteTextView = (TextView) view.findViewById(R.id.textTextView);
-//        noteTextView.setText(notes.get(position).getText());
-//
-//        ((CardView) view.findViewById(R.id.cardView)).setCardBackgroundColor(Color.parseColor(
-//                notes.get(position).getColor()
-//        ));
-//
-//        view.findViewById(R.id.cardView).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ((MainActivity) context).buildChangeNoteDialog(notes.get(position), NotesAdapter.this);
-//            }
-//        });
-//
-//        return view;
-//    }
-
-
     @Override
     public NotesViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.notes_item, viewGroup, false);
@@ -81,6 +42,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
         TextView noteTextView = (TextView) holder.cardView.findViewById(R.id.textTextView);
         noteTextView.setText(notes.get(position).getText());
+        if (noteTextView.getText().length() < 10) {
+            noteTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 48);
+        } else {
+            if (noteTextView.getText().length() < 25) {
+                noteTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+            }
+        }
 
         holder.cardView.setCardBackgroundColor(Color.parseColor(
                 notes.get(position).getColor()
@@ -109,6 +77,15 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                 return note;
         }
         return null;
+    }
+
+    public void removeItemById(String id) {
+        for(int i = 0; i < notes.size(); i++) {
+            if (notes.get(i).getId().equals(id)) {
+                notes.remove(i);
+                break;
+            }
+        }
     }
 
     public class NotesViewHolder extends RecyclerView.ViewHolder {

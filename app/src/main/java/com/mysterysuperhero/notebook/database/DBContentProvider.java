@@ -162,7 +162,19 @@ public class DBContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String finalWhere;
+        int count;
+        String u = uri.getScheme() + "://" + uri.getHost() + uri.getPath();
+        switch (sUriMatcher.get(u)) {
+            case 1: // MYSUBSCRIBES
+                finalWhere = selection;
+                count = db.delete(DataBaseContract.Notes.TABLE_NAME, finalWhere, selectionArgs);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+        return count;
     }
 
     @Override
