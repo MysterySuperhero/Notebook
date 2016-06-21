@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ListView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -34,12 +35,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private View positiveAction;
     private EditText nameEditText;
     private EditText noteEditText;
-    private GridView notesView;
+    private ListView notesView;
 
-    private static final String DEFAULT_COLOR = "#FF4081";
+    private static final String DEFAULT_COLOR = "#10DD7D";
     public static final int NOTES_LOADER = 0;
     public static final int CATEGORIES_LOADER = 1;
 
+    private int itemsCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getSupportLoaderManager().initLoader(NOTES_LOADER, null, this);
         getSupportLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
 
-        notesView = (GridView) findViewById(R.id.notesGridView);
+        notesView = (ListView) findViewById(R.id.notesListView);
         notesView.setAdapter(new NotesAdapter(this, new ArrayList<Note>()));
     }
 
@@ -232,11 +234,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     if (cursor.moveToFirst()) {
                         System.out.println("Notes cursor loaded!");
                         ArrayList<Note> notes = new ArrayList<>();
+                        cursor.move(this.itemsCount);
                         do {
                             System.out.println(cursor.getString(cursor.getColumnIndex(
                                     DataBaseContract.Notes.COLUMN_NAME_TEXT
                             )));
                             notes.add(new Note(
+                                    cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes._ID)),
                                     cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes.COLUMN_NAME_NAME)),
                                     cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes.COLUMN_NAME_TEXT)),
                                     cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes.COLUMN_NAME_COLOR))
@@ -244,6 +248,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         } while (cursor.moveToNext());
                         ((NotesAdapter) this.notesView.getAdapter()).addToNotes(notes);
                         ((NotesAdapter) this.notesView.getAdapter()).notifyDataSetChanged();
+                        this.itemsCount = this.notesView.getAdapter().getCount();
                     }
                     break;
                 case CATEGORIES_LOADER:

@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:hint="@string/action_add_note_name_hint"
-        android:inputType="textCapSentences"/>
+        android:inputType="textMultiLine" />
 
 
     <TextView
@@ -34,6 +34,6 @@
         android:layout_height="wrap_content"
         android:maxLines="8"
         android:hint="@string/action_add_note_note_hint"
-        android:inputType="textCapSentences" />
+        android:inputType="textMultiLine" />
 
 </LinearLayout>

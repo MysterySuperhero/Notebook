@@ -9,13 +9,13 @@
     tools:context="com.mysterysuperhero.notebook.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <GridView
-        android:id="@+id/notesGridView"
+    <ListView
+        android:id="@+id/notesListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:horizontalSpacing="5dp"
-        android:numColumns="2"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="5dp" />
+        android:verticalSpacing="5dp"
+        android:dividerHeight="0dp"
+        android:divider="@null" />
 
 </RelativeLayout>

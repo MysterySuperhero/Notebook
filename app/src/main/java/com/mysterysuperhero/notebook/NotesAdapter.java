@@ -2,10 +2,13 @@ package com.mysterysuperhero.notebook;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.mysterysuperhero.notebook.utils.Note;
@@ -32,29 +35,29 @@ public class NotesAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View gridView;
+        View view;
 
         if (convertView == null) {
 
-            gridView = new View(context);
+            view = new View(context);
 
-            // get layout from mobile.xml
-            gridView = inflater.inflate(R.layout.notes_gridview_item, null);
-
-            // set value into textview
-            TextView nameTextView = (TextView) gridView.findViewById(R.id.nameTextView);
-            nameTextView.setText(notes.get(position).getName());
-
-            TextView noteTextView = (TextView) gridView.findViewById(R.id.textTextView);
-            nameTextView.setText(notes.get(position).getText());
+            view = inflater.inflate(R.layout.notes_gridview_item, null);
 
         } else {
-            gridView = (View) convertView;
+            view = (View) convertView;
         }
 
-        gridView.setBackgroundColor(Color.parseColor(notes.get(position).getColor()));
+        TextView nameTextView = (TextView) view.findViewById(R.id.nameTextView);
+        nameTextView.setText(notes.get(position).getName());
 
-        return gridView;
+        TextView noteTextView = (TextView) view.findViewById(R.id.textTextView);
+        noteTextView.setText(notes.get(position).getText());
+
+        ((CardView) view.findViewById(R.id.cardView)).setCardBackgroundColor(Color.parseColor(
+                notes.get(position).getColor()
+        ));
+
+        return view;
     }
 
     @Override
@@ -62,8 +65,9 @@ public class NotesAdapter extends BaseAdapter {
         return this.notes.size();
     }
 
-    public String getItem(int position) {
-        return this.notes.get(position).getText();
+    @Override
+    public Note getItem(int position) {
+        return this.notes.get(position);
     }
 
     @Override
@@ -74,4 +78,13 @@ public class NotesAdapter extends BaseAdapter {
     public void addToNotes(ArrayList<Note> newNotes) {
         this.notes.addAll(newNotes);
     }
+
+    public Note getItemById(String id) {
+        for(Note note : notes) {
+            if (note.getId().equals(id))
+                return note;
+        }
+        return null;
+    }
+
 }
