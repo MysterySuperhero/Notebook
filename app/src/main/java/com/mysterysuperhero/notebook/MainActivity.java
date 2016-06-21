@@ -11,6 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -31,12 +33,14 @@ import com.mysterysuperhero.notebook.utils.Note;
 
 import java.util.ArrayList;
 
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
+
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private View positiveAction;
     private EditText nameEditText;
     private EditText noteEditText;
-    private ListView notesView;
+    private RecyclerView notesView;
 
     private static final String DEFAULT_COLOR = "#FFFFFF";
     public static final int NOTES_LOADER = 0;
@@ -57,7 +61,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getSupportLoaderManager().initLoader(NOTES_LOADER, null, this);
         getSupportLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
 
-        notesView = (ListView) findViewById(R.id.notesListView);
+        notesView = (RecyclerView) findViewById(R.id.notesRecyclerView);
+        notesView.setLayoutManager(new LinearLayoutManager(this));
+        notesView.setItemAnimator(new SlideInUpAnimator());
         notesView.setAdapter(new NotesAdapter(this, new ArrayList<Note>()));
     }
 
@@ -144,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
     }
 
-    public void buildChangeNoteDialog(final Note note, final BaseAdapter adapter) {
+    public void buildChangeNoteDialog(final Note note, final RecyclerView.Adapter adapter) {
         MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title(R.string.action_change_note_title)
                 .customView(R.layout.add_note_dialog, true)
@@ -295,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         } while (cursor.moveToNext());
                         ((NotesAdapter) this.notesView.getAdapter()).addToNotes(notes);
                         ((NotesAdapter) this.notesView.getAdapter()).notifyDataSetChanged();
-                        this.itemsCount = this.notesView.getAdapter().getCount();
+                        this.itemsCount = this.notesView.getAdapter().getItemCount();
                     }
                     break;
                 case CATEGORIES_LOADER:

@@ -9,13 +9,11 @@
     tools:context="com.mysterysuperhero.notebook.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <ListView
-        android:id="@+id/notesListView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/notesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:horizontalSpacing="5dp"
-        android:verticalSpacing="5dp"
-        android:dividerHeight="0dp"
-        android:divider="@null" />
+        android:verticalSpacing="5dp"/>
 
 </RelativeLayout>
