@@ -21,10 +21,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.internal.MDTintHelper;
 import com.afollestad.materialdialogs.internal.ThemeSingleton;
 import com.mysterysuperhero.notebook.MainActivity;
-import com.mysterysuperhero.notebook.NotesAdapter;
 import com.mysterysuperhero.notebook.R;
 import com.mysterysuperhero.notebook.database.DataBaseContract;
 import com.mysterysuperhero.notebook.events.NotesLoadedEvent;
+import com.mysterysuperhero.notebook.utils.FragmentsVisiblity;
 import com.mysterysuperhero.notebook.utils.Note;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,7 +37,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 /**
  * Created by dmitri on 21.06.16.
  */
-public class NotesFragment extends Fragment {
+public class NotesFragment extends Fragment implements FragmentsVisiblity {
 
     private View positiveAction;
     private EditText nameEditText;
@@ -64,34 +64,18 @@ public class NotesFragment extends Fragment {
         notesView.setLayoutManager(new LinearLayoutManager(getActivity()));
         notesView.setItemAnimator(new SlideInUpAnimator());
         notesView.setAdapter(new NotesAdapter(getActivity(), new ArrayList<Note>(), this));
+    }
 
-        ((MainActivity) getActivity()).fab.setOnClickListener(null);
-        ((MainActivity) getActivity()).fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new MaterialDialog.Builder(getActivity())
-                        .title(R.string.action_add)
-                        .items(getString(R.string.action_add_note), getString(R.string.action_add_category))
-                        .itemsCallback(new MaterialDialog.ListCallback() {
-                            @Override
-                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                switch (which) {
-                                    case 0:
-                                        buildAddNoteDialog();
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                        })
-                        .show();
-            }
-        });
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Override
     public void onStop() {
         EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     private void buildAddNoteDialog() {
@@ -232,5 +216,16 @@ public class NotesFragment extends Fragment {
             ((NotesAdapter) this.notesView.getAdapter()).notifyDataSetChanged();
             this.itemsCount = this.notesView.getAdapter().getItemCount();
         }
+    }
+
+    @Override
+    public void fragmentBecameVisible() {
+        ((MainActivity) getActivity()).fab.setOnClickListener(null);
+        ((MainActivity) getActivity()).fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buildAddNoteDialog();
+            }
+        });
     }
 }

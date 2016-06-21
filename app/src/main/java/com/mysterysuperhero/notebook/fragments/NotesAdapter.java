@@ -1,19 +1,16 @@
-package com.mysterysuperhero.notebook;
+package com.mysterysuperhero.notebook.fragments;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.mysterysuperhero.notebook.fragments.NotesFragment;
+import com.mysterysuperhero.notebook.R;
 import com.mysterysuperhero.notebook.utils.Note;
 
 import java.util.ArrayList;
@@ -113,8 +110,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             });
 
         }
-
-
     }
 
 }

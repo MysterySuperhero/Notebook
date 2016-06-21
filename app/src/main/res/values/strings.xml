@@ -17,7 +17,7 @@
     <string name="action_add_note_note_hint">Введите текст заметки...</string>
 
 
-    <string name="action_add_category_title">Добавить заметку</string>
+    <string name="action_add_category_title">Добавить категорию</string>
     <string name="action_add_category_name">Название категории</string>
     <string name="action_add_category_name_hint">Введите название...</string>
 

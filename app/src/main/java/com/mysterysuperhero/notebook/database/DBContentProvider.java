@@ -88,9 +88,9 @@ public class DBContentProvider extends ContentProvider {
             case 2: // CATEGORIES
                 qb.setTables(DataBaseContract.Categories.TABLE_NAME);
                 qb.setProjectionMap(categoriesProjection);
-                orderBy = DataBaseContract.Categories.COLUMN_NAME_NAME + " ASC";
+                orderBy = DataBaseContract.Categories._ID + " ASC LIMIT 100";
                 if (selectionArgs != null)
-                    qb.appendWhere(DataBaseContract.Categories.COLUMN_NAME_NAME + "= ?");
+                    qb.appendWhere(DataBaseContract.Categories._ID + "= ?");
                 break;
         }
         SQLiteDatabase db = dbHelper.getReadableDatabase();

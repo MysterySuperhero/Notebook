@@ -10,14 +10,14 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.mysterysuperhero.notebook.database.DataBaseContract;
+import com.mysterysuperhero.notebook.events.CategoriesLoadedEvent;
 import com.mysterysuperhero.notebook.events.NotesLoadedEvent;
 import com.mysterysuperhero.notebook.fragments.ViewPagerAdapter;
+import com.mysterysuperhero.notebook.utils.FragmentsVisiblity;
 import com.mysterysuperhero.notebook.utils.SlidingTabLayout;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public static final String DEFAULT_COLOR = "#FFFFFF";
     public static final int NOTES_LOADER = 0;
-
     public static final int CATEGORIES_LOADER = 1;
 
     @Override
@@ -47,6 +46,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         adapter = new ViewPagerAdapter(getSupportFragmentManager(), titles, tabsCount);
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(adapter);
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(final int position, final float v, final int i2) {
+            }
+
+            @Override
+            public void onPageSelected(final int position) {
+                FragmentsVisiblity fragment = (FragmentsVisiblity) adapter.instantiateItem(pager, position);
+                if (fragment != null) {
+                    fragment.fragmentBecameVisible();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(final int position) {
+            }
+        });
 
         tabs = (SlidingTabLayout) findViewById(R.id.tabs);
         tabs.setDistributeEvenly(true);
@@ -65,78 +81,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getSupportLoaderManager().initLoader(NOTES_LOADER, null, this);
         getSupportLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
     }
-
-//    private void initFloatingActionButton(FloatingActionButton button) {
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                new MaterialDialog.Builder(MainActivity.this)
-//                        .title(R.string.action_add)
-//                        .items(getString(R.string.action_add_note), getString(R.string.action_add_category))
-//                        .itemsCallback(new MaterialDialog.ListCallback() {
-//                            @Override
-//                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-//                                switch (which) {
-//                                    case 0:
-//                                        buildAddNoteDialog();
-//                                        break;
-//                                    case 1:
-//                                        buildAddCategoryDialog();
-//                                        break;
-//                                    default:
-//                                        break;
-//                                }
-//                            }
-//                        })
-//                        .show();
-//            }
-//        });
-//
-//    }
-
-//    private void buildAddCategoryDialog() {
-//        MaterialDialog dialog = new MaterialDialog.Builder(this)
-//                .title(R.string.action_add_category_title)
-//                .customView(R.layout.add_category_dialog, true)
-//                .positiveText(R.string.action_add_positive)
-//                .negativeText(android.R.string.cancel)
-//                .onPositive(new MaterialDialog.SingleButtonCallback() {
-//                    @Override
-//                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-//                        ContentValues values = new ContentValues();
-//                        values.put(DataBaseContract.Categories.COLUMN_NAME_NAME, nameEditText.getText().toString());
-//                        values.put(DataBaseContract.Notes.COLUMN_NAME_COLOR, DEFAULT_COLOR);
-//
-//                        getContentResolver().insert(DataBaseContract.Categories.CONTENT_URI, values);
-//                    }
-//                }).build();
-//
-//        positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
-//        nameEditText = (EditText) dialog.getCustomView().findViewById(R.id.addCategoryDialogNameEditText);
-//
-//        nameEditText.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                positiveAction.setEnabled(s.toString().trim().length() > 0);
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//            }
-//        });
-//
-//        int widgetColor = ThemeSingleton.get().widgetColor;
-//
-//        MDTintHelper.setTint(nameEditText,
-//                widgetColor == 0 ? ContextCompat.getColor(this, R.color.colorAccent) : widgetColor);
-//
-//        dialog.show();
-//        positiveAction.setEnabled(false); // disabled by default
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -185,14 +129,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     EventBus.getDefault().post(new NotesLoadedEvent(cursor));
                     break;
                 case CATEGORIES_LOADER:
-                    if (cursor.moveToFirst()) {
-                        System.out.println("Categories cursor loaded!");
-                        do {
-                            System.out.println(cursor.getString(cursor.getColumnIndex(
-                                    DataBaseContract.Categories.COLUMN_NAME_NAME
-                            )));
-                        } while (cursor.moveToNext());
-                    }
+                    EventBus.getDefault().post(new CategoriesLoadedEvent(cursor));
                     break;
                 default:
                     break;

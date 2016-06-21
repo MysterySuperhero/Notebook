@@ -17,7 +17,7 @@ public class DataBaseContract {
         private static final String PATH_NOTES = "/notes";
         private static final String PATH_NOTES_ID = "/notes/";
         public static final Uri CONTENT_URI =  Uri.parse(SCHEME + AUTHORITY + PATH_NOTES);
-        public static final String DEFAULT_SORT_ORDER = "lastName ASC";
+        public static final String DEFAULT_SORT_ORDER = "_ID ASC";
 
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_TEXT = "text";
@@ -37,7 +37,7 @@ public class DataBaseContract {
         private static final String PATH_CATEGORIES = "/categories";
         private static final String PATH_CATEGORIES_ID = "/categories/";
         public static final Uri CONTENT_URI =  Uri.parse(SCHEME + AUTHORITY + PATH_CATEGORIES);
-        public static final String DEFAULT_SORT_ORDER = "lastName ASC";
+        public static final String DEFAULT_SORT_ORDER = "_ID ASC";
 
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_COLOR = "color";
