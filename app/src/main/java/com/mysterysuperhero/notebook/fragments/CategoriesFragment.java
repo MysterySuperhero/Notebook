@@ -43,7 +43,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 /**
  * Created by dmitri on 21.06.16.
  */
-public class CategoriesFragment extends Fragment implements FragmentsVisiblity, ColorChooserDialog.ColorCallback {
+public class CategoriesFragment extends Fragment implements FragmentsVisiblity {
     private View positiveAction;
     private EditText nameEditText;
     private RecyclerView categoriesView;
@@ -178,8 +178,4 @@ public class CategoriesFragment extends Fragment implements FragmentsVisiblity, 
         });
     }
 
-    @Override
-    public void onColorSelection(@NonNull ColorChooserDialog dialog, @ColorInt int selectedColor) {
-
-    }
 }

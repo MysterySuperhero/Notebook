@@ -164,5 +164,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             getWindow().setStatusBarColor(CircleView.shiftColorDown(selectedColor));
             getWindow().setNavigationBarColor(selectedColor);
         }
+
     }
 }

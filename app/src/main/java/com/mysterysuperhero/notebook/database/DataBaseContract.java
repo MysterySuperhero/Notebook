@@ -22,12 +22,14 @@ public class DataBaseContract {
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_TEXT = "text";
         public static final String COLUMN_NAME_COLOR = "color";
+        public static final String COLUMN_NAME_CATEGORY = "category";
 
         public static final String[] DEFAULT_PROJECTION = new String[] {
                 Notes._ID,
                 Notes.COLUMN_NAME_NAME,
                 Notes.COLUMN_NAME_TEXT,
                 Notes.COLUMN_NAME_COLOR,
+                Notes.COLUMN_NAME_CATEGORY
         };
     }
 

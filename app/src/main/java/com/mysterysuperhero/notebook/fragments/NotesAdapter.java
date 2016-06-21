@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.mysterysuperhero.notebook.R;
+import com.mysterysuperhero.notebook.utils.CategoriesGetter;
 import com.mysterysuperhero.notebook.utils.Note;
 
 import java.util.ArrayList;
@@ -59,6 +61,24 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             @Override
             public void onClick(View v) {
                 fragment.buildChangeNoteDialog(notes.get(position), NotesAdapter.this);
+            }
+        });
+
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                new MaterialDialog.Builder(context)
+                        .title(R.string.category)
+                        .items(CategoriesGetter.getCategories(context))
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                
+                            }
+                        })
+                        .positiveText(android.R.string.cancel)
+                        .show();
+                return true;
             }
         });
     }

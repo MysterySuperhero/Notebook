@@ -21,6 +21,8 @@
     <string name="action_add_category_name">Название категории</string>
     <string name="action_add_category_name_hint">Введите название...</string>
 
+    <string name="category">Категория</string>
+
     <string name="action_change_note_title">Изменить заметку</string>
 
     <string name="color_palette">Цветовая палитра</string>

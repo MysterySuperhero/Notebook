@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "notebook.db";
 
     private static final String TEXT_TYPE = " TEXT";
@@ -23,7 +23,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     DataBaseContract.Notes._ID + " INTEGER PRIMARY KEY," +
                     DataBaseContract.Notes.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
                     DataBaseContract.Notes.COLUMN_NAME_TEXT + TEXT_TYPE + COMMA_SEP +
-                    DataBaseContract.Notes.COLUMN_NAME_COLOR + TEXT_TYPE +
+                    DataBaseContract.Notes.COLUMN_NAME_COLOR + TEXT_TYPE + COMMA_SEP +
+                    DataBaseContract.Notes.COLUMN_NAME_CATEGORY + TEXT_TYPE +
                     " )";
 
     public static final String SQL_CREATE_TABLE_CATEGORIES =
