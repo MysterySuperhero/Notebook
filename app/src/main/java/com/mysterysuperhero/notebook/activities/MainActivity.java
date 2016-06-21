@@ -1,5 +1,6 @@
-package com.mysterysuperhero.notebook;
+package com.mysterysuperhero.notebook.activities;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -21,6 +22,7 @@ import com.afollestad.materialdialogs.color.CircleView;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.afollestad.materialdialogs.internal.ThemeSingleton;
 import com.afollestad.materialdialogs.util.DialogUtils;
+import com.mysterysuperhero.notebook.R;
 import com.mysterysuperhero.notebook.database.DataBaseContract;
 import com.mysterysuperhero.notebook.events.CategoriesLoadedEvent;
 import com.mysterysuperhero.notebook.events.ColorChoseEvent;
@@ -109,12 +111,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                break;
+            case R.id.action_info:
+                Intent intent = new Intent(this, InfoActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

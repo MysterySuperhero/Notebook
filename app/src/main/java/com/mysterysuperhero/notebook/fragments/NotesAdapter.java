@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.mysterysuperhero.notebook.MainActivity;
+import com.mysterysuperhero.notebook.activities.MainActivity;
 import com.mysterysuperhero.notebook.R;
 import com.mysterysuperhero.notebook.database.DataBaseContract;
 import com.mysterysuperhero.notebook.utils.CategoriesGetter;
