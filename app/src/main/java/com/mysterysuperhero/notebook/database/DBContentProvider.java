@@ -194,6 +194,12 @@ public class DBContentProvider extends ContentProvider {
                 }
                 count = db.update(DataBaseContract.Notes.TABLE_NAME, values, finalWhere, selectionArgs);
                 break;
+            case 2: // CATEGORIES
+                if (selection != null) {
+                    finalWhere = selection;
+                }
+                count = db.update(DataBaseContract.Categories.TABLE_NAME, values, finalWhere, selectionArgs);
+                break;
         }
         return count;
     }

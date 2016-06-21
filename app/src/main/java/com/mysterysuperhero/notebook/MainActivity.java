@@ -23,6 +23,7 @@ import com.afollestad.materialdialogs.internal.ThemeSingleton;
 import com.afollestad.materialdialogs.util.DialogUtils;
 import com.mysterysuperhero.notebook.database.DataBaseContract;
 import com.mysterysuperhero.notebook.events.CategoriesLoadedEvent;
+import com.mysterysuperhero.notebook.events.ColorChoseEvent;
 import com.mysterysuperhero.notebook.events.NotesLoadedEvent;
 import com.mysterysuperhero.notebook.fragments.ViewPagerAdapter;
 import com.mysterysuperhero.notebook.utils.FragmentsVisiblity;
@@ -157,13 +158,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onColorSelection(@NonNull ColorChooserDialog dialog, @ColorInt int selectedColor) {
-        primaryPreselect = selectedColor;
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(selectedColor));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(CircleView.shiftColorDown(selectedColor));
-            getWindow().setNavigationBarColor(selectedColor);
-        }
-
+        EventBus.getDefault().post(new ColorChoseEvent(selectedColor));
+//        if (getSupportActionBar() != null)
+//            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(selectedColor));
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            getWindow().setStatusBarColor(CircleView.shiftColorDown(selectedColor));
+//            getWindow().setNavigationBarColor(selectedColor);
+//        }
     }
 }

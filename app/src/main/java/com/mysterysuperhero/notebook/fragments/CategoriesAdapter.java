@@ -38,7 +38,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
     }
 
     @Override
-    public void onBindViewHolder(CategoriesViewHolder holder, final int position) {
+    public void onBindViewHolder(final CategoriesViewHolder holder, final int position) {
         TextView nameTextView = (TextView) holder.cardView.findViewById(R.id.nameTextView);
         nameTextView.setText(categories.get(position).getName());
 
@@ -56,6 +56,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                fragment.changedViewId = position;
                 fragment.buildColorPicker();
                 return true;
             }

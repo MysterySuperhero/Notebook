@@ -28,6 +28,7 @@ import com.mysterysuperhero.notebook.MainActivity;
 import com.mysterysuperhero.notebook.R;
 import com.mysterysuperhero.notebook.database.DataBaseContract;
 import com.mysterysuperhero.notebook.events.CategoriesLoadedEvent;
+import com.mysterysuperhero.notebook.events.ColorChoseEvent;
 import com.mysterysuperhero.notebook.events.NotesLoadedEvent;
 import com.mysterysuperhero.notebook.utils.Category;
 import com.mysterysuperhero.notebook.utils.FragmentsVisiblity;
@@ -52,6 +53,8 @@ public class CategoriesFragment extends Fragment implements FragmentsVisiblity {
 
     public CategoriesFragment() {}
 
+    public int changedViewId;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.categories_tab, container, false);
@@ -68,8 +71,6 @@ public class CategoriesFragment extends Fragment implements FragmentsVisiblity {
         categoriesView.setLayoutManager(new LinearLayoutManager(getActivity()));
         categoriesView.setItemAnimator(new SlideInUpAnimator());
         categoriesView.setAdapter(new CategoriesAdapter(getActivity(), new ArrayList<Category>(), this));
-
-
     }
 
     @Override
@@ -165,6 +166,25 @@ public class CategoriesFragment extends Fragment implements FragmentsVisiblity {
             this.categoriesView.getAdapter().notifyDataSetChanged();
             this.itemsCount = this.categoriesView.getAdapter().getItemCount();
         }
+    }
+
+    @Subscribe
+    public void onColorChoseEvent(ColorChoseEvent event) {
+        String color = String.format("#%06X", (0xFFFFFF & event.color));
+        ((CategoriesAdapter) categoriesView.getAdapter())
+                .categories.get(changedViewId).setColor(color);
+        categoriesView.getAdapter().notifyDataSetChanged();
+
+        ContentValues values = new ContentValues();
+        String[] selectionArgs = { ((CategoriesAdapter) categoriesView.getAdapter())
+                .categories.get(changedViewId).getId() };
+        values.put(DataBaseContract.Categories.COLUMN_NAME_COLOR, color);
+        getContext().getContentResolver().update(
+                DataBaseContract.Categories.CONTENT_URI,
+                values,
+                DataBaseContract.Categories._ID + " = ? ",
+                selectionArgs
+        );
     }
 
     @Override
