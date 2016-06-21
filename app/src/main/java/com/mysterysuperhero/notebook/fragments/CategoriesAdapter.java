@@ -52,6 +52,14 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
 //                fragment.buildChangeNoteDialog(categories.get(position), CategoriesAdapter.this);
             }
         });
+
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                fragment.buildColorPicker();
+                return true;
+            }
+        });
     }
 
     @Override

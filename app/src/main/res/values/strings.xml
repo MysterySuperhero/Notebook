@@ -23,5 +23,7 @@
 
     <string name="action_change_note_title">Изменить заметку</string>
 
+    <string name="color_palette">Цветовая палитра</string>
+    <string name="colors">Цвета</string>
 
 </resources>

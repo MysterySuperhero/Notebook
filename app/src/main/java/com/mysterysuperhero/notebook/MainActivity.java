@@ -1,8 +1,12 @@
 package com.mysterysuperhero.notebook;
 
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -13,6 +17,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.afollestad.materialdialogs.color.CircleView;
+import com.afollestad.materialdialogs.color.ColorChooserDialog;
+import com.afollestad.materialdialogs.internal.ThemeSingleton;
+import com.afollestad.materialdialogs.util.DialogUtils;
 import com.mysterysuperhero.notebook.database.DataBaseContract;
 import com.mysterysuperhero.notebook.events.CategoriesLoadedEvent;
 import com.mysterysuperhero.notebook.events.NotesLoadedEvent;
@@ -22,12 +30,13 @@ import com.mysterysuperhero.notebook.utils.SlidingTabLayout;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
+        ColorChooserDialog.ColorCallback {
 
     ViewPager pager;
     ViewPagerAdapter adapter;
     SlidingTabLayout tabs;
-    CharSequence titles[] = { "Записи", "Категории" };
+    CharSequence titles[] = {"Записи", "Категории"};
     int tabsCount = 2;
 
     public FloatingActionButton fab;
@@ -35,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final String DEFAULT_COLOR = "#FFFFFF";
     public static final int NOTES_LOADER = 0;
     public static final int CATEGORIES_LOADER = 1;
+
+    public int primaryPreselect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         tabs.setViewPager(pager);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        primaryPreselect = DialogUtils.resolveColor(this, R.attr.colorPrimary);
 
         getSupportLoaderManager().initLoader(NOTES_LOADER, null, this);
         getSupportLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
@@ -140,5 +153,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void onColorSelection(@NonNull ColorChooserDialog dialog, @ColorInt int selectedColor) {
+        primaryPreselect = selectedColor;
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(selectedColor));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(CircleView.shiftColorDown(selectedColor));
+            getWindow().setNavigationBarColor(selectedColor);
+        }
     }
 }
