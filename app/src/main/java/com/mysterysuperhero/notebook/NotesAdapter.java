@@ -1,16 +1,25 @@
 package com.mysterysuperhero.notebook;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.internal.MDTintHelper;
+import com.afollestad.materialdialogs.internal.ThemeSingleton;
+import com.mysterysuperhero.notebook.database.DataBaseContract;
 import com.mysterysuperhero.notebook.utils.Note;
 
 import java.util.ArrayList;
@@ -29,7 +38,7 @@ public class NotesAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
 
         LayoutInflater inflater = (LayoutInflater) context
@@ -56,6 +65,14 @@ public class NotesAdapter extends BaseAdapter {
         ((CardView) view.findViewById(R.id.cardView)).setCardBackgroundColor(Color.parseColor(
                 notes.get(position).getColor()
         ));
+
+        view.findViewById(R.id.cardView).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("____________________________CLICK__________________________________");
+                ((MainActivity) context).buildChangeNoteDialog(notes.get(position));
+            }
+        });
 
         return view;
     }

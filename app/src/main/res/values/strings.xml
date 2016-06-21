@@ -7,6 +7,7 @@
     <string name="action_add_category">Категория</string>
 
     <string name="action_add_positive">Добавить</string>
+    <string name="action_change_positive">Сохранить</string>
 
     <string name="action_add_note_title">Добавить заметку</string>
     <string name="action_add_note_name">Название заметки</string>
@@ -18,5 +19,8 @@
     <string name="action_add_category_title">Добавить заметку</string>
     <string name="action_add_category_name">Название категории</string>
     <string name="action_add_category_name_hint">Введите название...</string>
+
+    <string name="action_change_note_title">Изменить заметку</string>
+
 
 </resources>

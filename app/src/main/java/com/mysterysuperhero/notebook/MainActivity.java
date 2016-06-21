@@ -143,6 +143,46 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
     }
 
+    public void buildChangeNoteDialog(final Note note) {
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title(R.string.action_change_note_title)
+                .customView(R.layout.add_note_dialog, true)
+                .positiveText(R.string.action_change_positive)
+                .negativeText(android.R.string.cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        ContentValues values = new ContentValues();
+                        values.put(DataBaseContract.Notes.COLUMN_NAME_NAME, nameEditText.getText().toString());
+                        values.put(DataBaseContract.Notes.COLUMN_NAME_TEXT, noteEditText.getText().toString());
+                        values.put(DataBaseContract.Notes.COLUMN_NAME_COLOR, DEFAULT_COLOR);
+
+                        String[] selectionArgs = {note.getId()};
+                        getContentResolver().update(DataBaseContract.Notes.CONTENT_URI, values, "_ID", selectionArgs);
+                    }
+                }).build();
+
+        positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
+        nameEditText = (EditText) dialog.getCustomView().findViewById(R.id.addNoteDialogNameEditText);
+        noteEditText = (EditText) dialog.getCustomView().findViewById(R.id.addNoteDialogNoteEditText);
+        nameEditText.setText(note.getName());
+        noteEditText.setText(note.getText());
+
+        addTextChangedListener(nameEditText, noteEditText);
+        addTextChangedListener(noteEditText, nameEditText);
+
+        int widgetColor = ThemeSingleton.get().widgetColor;
+
+        MDTintHelper.setTint(noteEditText,
+                widgetColor == 0 ? ContextCompat.getColor(this, R.color.colorAccent) : widgetColor);
+
+        MDTintHelper.setTint(nameEditText,
+                widgetColor == 0 ? ContextCompat.getColor(this, R.color.colorAccent) : widgetColor);
+
+        dialog.show();
+        positiveAction.setEnabled(false); // disabled by default
+    }
+
     private void buildAddCategoryDialog() {
         MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title(R.string.action_add_category_title)
