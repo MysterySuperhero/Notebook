@@ -2,6 +2,7 @@ package com.mysterysuperhero.notebook;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -12,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.mysterysuperhero.notebook.fragments.NotesFragment;
 import com.mysterysuperhero.notebook.utils.Note;
 
 import java.util.ArrayList;
@@ -23,10 +25,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
     Context context;
     ArrayList<Note> notes;
+    NotesFragment fragment;
 
-    public NotesAdapter(Context context, ArrayList<Note> notes) {
+    public NotesAdapter(Context context, ArrayList<Note> notes, NotesFragment fragment) {
         this.context = context;
         this.notes = notes;
+        this.fragment = fragment;
     }
 
     @Override
@@ -54,10 +58,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                 notes.get(position).getColor()
         ));
 
-        holder.cardView.findViewById(R.id.cardView).setOnClickListener(new View.OnClickListener() {
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) context).buildChangeNoteDialog(notes.get(position), NotesAdapter.this);
+                fragment.buildChangeNoteDialog(notes.get(position), NotesAdapter.this);
             }
         });
     }

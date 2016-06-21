@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorTextPrimary">#000000</color>
     <color name="colorTextSecondary">#808080</color>
+    <color name="tabScrollColor">#808080</color>
 </resources>
