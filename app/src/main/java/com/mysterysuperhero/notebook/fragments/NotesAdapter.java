@@ -1,5 +1,6 @@
 package com.mysterysuperhero.notebook.fragments;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
@@ -11,8 +12,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.mysterysuperhero.notebook.MainActivity;
 import com.mysterysuperhero.notebook.R;
+import com.mysterysuperhero.notebook.database.DataBaseContract;
 import com.mysterysuperhero.notebook.utils.CategoriesGetter;
+import com.mysterysuperhero.notebook.utils.Category;
 import com.mysterysuperhero.notebook.utils.Note;
 
 import java.util.ArrayList;
@@ -43,7 +47,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         TextView nameTextView = (TextView) holder.cardView.findViewById(R.id.nameTextView);
         nameTextView.setText(notes.get(position).getName());
 
-        TextView noteTextView = (TextView) holder.cardView.findViewById(R.id.textTextView);
+        final TextView noteTextView = (TextView) holder.cardView.findViewById(R.id.textTextView);
         noteTextView.setText(notes.get(position).getText());
         if (noteTextView.getText().length() < 10) {
             noteTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 48);
@@ -53,6 +57,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             }
         }
 
+        if (notes.get(position).getColor() == null) {
+            notes.get(position).setColor(MainActivity.DEFAULT_COLOR);
+        }
         holder.cardView.setCardBackgroundColor(Color.parseColor(
                 notes.get(position).getColor()
         ));
@@ -67,13 +74,25 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                ArrayList<String> categoriesNames = new ArrayList<>();
+                final ArrayList<Category> categories = new ArrayList<>();
+                CategoriesGetter.getCategories(context, categoriesNames, categories);
                 new MaterialDialog.Builder(context)
                         .title(R.string.category)
-                        .items(CategoriesGetter.getCategories(context))
+                        .items(categoriesNames)
                         .itemsCallback(new MaterialDialog.ListCallback() {
                             @Override
                             public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-
+                                ContentValues values = new ContentValues();
+                                values.put(DataBaseContract.Notes.COLUMN_NAME_CATEGORY, categories.get(which).getId());
+                                String[] selectionArgs = { notes.get(position).getId() };
+                                context.getContentResolver().update(
+                                        DataBaseContract.Notes.CONTENT_URI,
+                                        values, DataBaseContract.Notes._ID + " = ? ",
+                                        selectionArgs
+                                );
+                                notes.get(position).setColor(categories.get(which).getColor());
+                                notifyDataSetChanged();
                             }
                         })
                         .positiveText(android.R.string.cancel)
@@ -89,6 +108,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     }
 
     public void addToNotes(ArrayList<Note> newNotes) {
+        this.notes.addAll(newNotes);
+    }
+
+    public void clearAndAddToNotes(ArrayList<Note> newNotes) {
+        this.notes.clear();
         this.notes.addAll(newNotes);
     }
 

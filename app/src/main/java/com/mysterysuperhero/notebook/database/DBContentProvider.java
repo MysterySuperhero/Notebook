@@ -36,11 +36,11 @@ public class DBContentProvider extends ContentProvider {
         sUriMatcher.put(DataBaseContract.SCHEME + DataBaseContract.AUTHORITY + "/notes_categories", NOTES_CATEGORIES);
 
         notesProjection = new HashMap<>();
-        for(int i=0; i < DataBaseContract.Notes.DEFAULT_PROJECTION.length; i++) {
-            notesProjection.put(
-                    DataBaseContract.Notes.DEFAULT_PROJECTION[i],
-                    DataBaseContract.Notes.DEFAULT_PROJECTION[i]);
-        }
+//        for(int i=0; i < DataBaseContract.Notes.DEFAULT_PROJECTION.length; i++) {
+//            notesProjection.put(
+//                    DataBaseContract.Notes.DEFAULT_PROJECTION[i],
+//                    DataBaseContract.Notes.DEFAULT_PROJECTION[i]);
+//        }
 
         categoriesProjection = new HashMap<>();
         for(int i = 0; i < DataBaseContract.Categories.DEFAULT_PROJECTION.length; i++) {
@@ -77,7 +77,24 @@ public class DBContentProvider extends ContentProvider {
         String orderBy = null;
         switch (sUriMatcher.get(u)) {
             case 1: // NOTES
-                qb.setTables(DataBaseContract.Notes.TABLE_NAME);
+
+                StringBuilder sb = new StringBuilder();
+                sb.append(DataBaseContract.Notes.TABLE_NAME);
+                sb.append(" LEFT JOIN ");
+                sb.append(DataBaseContract.Categories.TABLE_NAME);
+                sb.append(" ON (");
+                sb.append("notes.category");
+                sb.append(" = ");
+                sb.append("categories._id");
+                sb.append(")");
+                String table = sb.toString();
+
+                qb.setTables(table);
+                notesProjection.put("notes._id", "notes._id AS _id");
+                notesProjection.put("notes.name", "notes.name AS name");
+                notesProjection.put("notes.text", "notes.text AS text");
+                notesProjection.put("notes.category", "notes.category AS category");
+                notesProjection.put("categories.color", "categories.color AS color");
                 qb.setProjectionMap(notesProjection);
                 orderBy = DataBaseContract.Notes._ID + " ASC LIMIT 100";
                 if (selectionArgs != null) {
@@ -147,15 +164,6 @@ public class DBContentProvider extends ContentProvider {
                     getContext().getContentResolver().notifyChange(DataBaseContract.Categories.CONTENT_URI, null);
                 }
                 break;
-            case 3: // NOTES_CATEGORIES
-                valuePutter(values, DataBaseContract.NotesCategories.COLUMN_NAME_NOTE_ID);
-                valuePutter(values, DataBaseContract.NotesCategories.COLUMN_NAME_CATEGORY_ID);
-
-                rowId = db.insertOrThrow(DataBaseContract.NotesCategories.TABLE_NAME, null, values);
-                if (rowId > 0) {
-                    getContext().getContentResolver().notifyChange(DataBaseContract.NotesCategories.CONTENT_URI, null);
-                }
-                break;
         }
         return rowUri;
     }
@@ -199,6 +207,10 @@ public class DBContentProvider extends ContentProvider {
                     finalWhere = selection;
                 }
                 count = db.update(DataBaseContract.Categories.TABLE_NAME, values, finalWhere, selectionArgs);
+                getContext().getContentResolver().notifyChange(
+                        Uri.parse(DataBaseContract.SCHEME + DataBaseContract.AUTHORITY + "/notes"),
+                        null
+                );
                 break;
         }
         return count;

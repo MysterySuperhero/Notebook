@@ -69,7 +69,13 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
     @Override
     public void onResume() {
         super.onResume();
-
+        ((MainActivity) getActivity()).fab.setOnClickListener(null);
+        ((MainActivity) getActivity()).fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buildAddNoteDialog();
+            }
+        });
     }
 
     @Override
@@ -93,7 +99,7 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
                         values.put(DataBaseContract.Notes.COLUMN_NAME_COLOR, MainActivity.DEFAULT_COLOR);
 
                         getActivity().getContentResolver().insert(DataBaseContract.Notes.CONTENT_URI, values);
-                        itemsCount++;
+//                        itemsCount++;
                     }
                 }).build();
 
@@ -201,7 +207,7 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
             ArrayList<Note> notes = new ArrayList<>();
 
             if (this.itemsCount != 0) {
-                cursor.move(this.itemsCount - 1);
+                cursor.move(this.itemsCount); // - 1);
             }
 
             do {
@@ -227,5 +233,25 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
                 buildAddNoteDialog();
             }
         });
+        Cursor cursor = getActivity().getContentResolver().query(
+                DataBaseContract.Notes.CONTENT_URI,
+                null, null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+            System.out.println("Notes cursor loaded!");
+            ArrayList<Note> notes = new ArrayList<>();
+
+            do {
+                notes.add(new Note(
+                        cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes._ID)),
+                        cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes.COLUMN_NAME_NAME)),
+                        cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes.COLUMN_NAME_TEXT)),
+                        cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes.COLUMN_NAME_COLOR))
+                ));
+            } while (cursor.moveToNext());
+            ((NotesAdapter) this.notesView.getAdapter()).clearAndAddToNotes(notes);
+            ((NotesAdapter) this.notesView.getAdapter()).notifyDataSetChanged();
+        }
     }
 }
