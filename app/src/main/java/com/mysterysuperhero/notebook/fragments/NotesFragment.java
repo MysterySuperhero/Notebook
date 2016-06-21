@@ -172,7 +172,6 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
                                 DataBaseContract.Notes._ID + " = ? ", selectionArgs);
                         note.setName(nameEditText.getText().toString());
                         note.setText(noteEditText.getText().toString());
-                        note.setColor(MainActivity.DEFAULT_COLOR);
                         adapter.notifyDataSetChanged();
                     }
                 }).build();
