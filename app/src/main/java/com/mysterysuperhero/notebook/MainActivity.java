@@ -17,6 +17,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ListView;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private EditText noteEditText;
     private ListView notesView;
 
-    private static final String DEFAULT_COLOR = "#10DD7D";
+    private static final String DEFAULT_COLOR = "#FFFFFF";
     public static final int NOTES_LOADER = 0;
     public static final int CATEGORIES_LOADER = 1;
 
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
     }
 
-    public void buildChangeNoteDialog(final Note note) {
+    public void buildChangeNoteDialog(final Note note, final BaseAdapter adapter) {
         MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title(R.string.action_change_note_title)
                 .customView(R.layout.add_note_dialog, true)
@@ -158,7 +159,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         values.put(DataBaseContract.Notes.COLUMN_NAME_COLOR, DEFAULT_COLOR);
 
                         String[] selectionArgs = {note.getId()};
-                        getContentResolver().update(DataBaseContract.Notes.CONTENT_URI, values, "_ID", selectionArgs);
+                        getContentResolver().update(DataBaseContract.Notes.CONTENT_URI, values,
+                                DataBaseContract.Notes._ID + " = ? ", selectionArgs);
+                        note.setName(nameEditText.getText().toString());
+                        note.setText(noteEditText.getText().toString());
+                        note.setColor(DEFAULT_COLOR);
+                        adapter.notifyDataSetChanged();
                     }
                 }).build();
 
@@ -274,11 +280,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     if (cursor.moveToFirst()) {
                         System.out.println("Notes cursor loaded!");
                         ArrayList<Note> notes = new ArrayList<>();
-                        cursor.move(this.itemsCount);
+
+                        if (this.itemsCount != 0) {
+                            cursor.move(this.itemsCount - 1);
+                        }
+
                         do {
-                            System.out.println(cursor.getString(cursor.getColumnIndex(
-                                    DataBaseContract.Notes.COLUMN_NAME_TEXT
-                            )));
                             notes.add(new Note(
                                     cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes._ID)),
                                     cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes.COLUMN_NAME_NAME)),

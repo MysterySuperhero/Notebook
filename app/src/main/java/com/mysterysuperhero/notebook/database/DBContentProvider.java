@@ -115,7 +115,6 @@ public class DBContentProvider extends ContentProvider {
         }
 
         dbHelper = new DataBaseHelper(getContext());
-        Context context = getContext();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values;
         if (initialValues != null) {
@@ -168,7 +167,23 @@ public class DBContentProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        String u = uri.getScheme() + "://" + uri.getHost() + uri.getPath();
+        if (!uriChecker(uri)) {
+            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        int count = 0;
+        String finalWhere = "";
+        switch (sUriMatcher.get(u)) {
+            case 1: // NOTES
+                if (selection != null) {
+                    finalWhere = selection;
+                }
+                count = db.update(DataBaseContract.Notes.TABLE_NAME, values, finalWhere, selectionArgs);
+                break;
+        }
+        return count;
     }
 
     private void valuePutter(ContentValues values, String columnName) {

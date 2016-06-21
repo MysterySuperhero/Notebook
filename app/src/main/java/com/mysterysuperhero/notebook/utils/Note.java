@@ -4,6 +4,7 @@ package com.mysterysuperhero.notebook.utils;
  * Created by dmitri on 21.06.16.
  */
 public class Note {
+
     private String id;
     private String name;
     private String text;
@@ -30,5 +31,21 @@ public class Note {
 
     public String getColor() {
         return this.color;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

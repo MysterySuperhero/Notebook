@@ -69,8 +69,7 @@ public class NotesAdapter extends BaseAdapter {
         view.findViewById(R.id.cardView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("____________________________CLICK__________________________________");
-                ((MainActivity) context).buildChangeNoteDialog(notes.get(position));
+                ((MainActivity) context).buildChangeNoteDialog(notes.get(position), NotesAdapter.this);
             }
         });
 
