@@ -59,4 +59,9 @@
     <string name="categories_tab">Категории</string>
 
     <string name="settings_warning">Для установки настроек, перезапустите приложение</string>
+    <string name="action_choose">Выберите действие</string>
+    <string-array name="actions_category_send">
+        <item>Выбрать категорию</item>
+        <item>Поделиться</item>
+    </string-array>
 </resources>

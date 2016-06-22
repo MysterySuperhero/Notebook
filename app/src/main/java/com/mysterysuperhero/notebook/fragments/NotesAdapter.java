@@ -77,29 +77,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ArrayList<String> categoriesNames = new ArrayList<>();
-                final ArrayList<Category> categories = new ArrayList<>();
-                CategoriesGetter.getCategories(context, categoriesNames, categories);
-                new MaterialDialog.Builder(context)
-                        .title(R.string.category)
-                        .items(categoriesNames)
-                        .itemsCallback(new MaterialDialog.ListCallback() {
-                            @Override
-                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                ContentValues values = new ContentValues();
-                                values.put(DataBaseContract.Notes.COLUMN_NAME_CATEGORY, categories.get(which).getId());
-                                String[] selectionArgs = { notes.get(position).getId() };
-                                context.getContentResolver().update(
-                                        DataBaseContract.Notes.CONTENT_URI,
-                                        values, DataBaseContract.Notes._ID + " = ? ",
-                                        selectionArgs
-                                );
-                                notes.get(position).setColor(categories.get(which).getColor());
-                                notifyDataSetChanged();
-                            }
-                        })
-                        .positiveText(android.R.string.cancel)
-                        .show();
+
+                buildChooseActionDialog(position);
+
                 return true;
             }
         });
@@ -138,6 +118,49 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                 break;
             }
         }
+    }
+
+    private void buildChooseActionDialog(final int position) {
+        new MaterialDialog.Builder(context)
+                .title(R.string.action_choose)
+                .items(R.array.actions_category_send)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        switch (which) {
+                            case 0:
+                                ArrayList<String> categoriesNames = new ArrayList<>();
+                                final ArrayList<Category> categories = new ArrayList<>();
+                                CategoriesGetter.getCategories(context, categoriesNames, categories);
+                                new MaterialDialog.Builder(context)
+                                    .title(R.string.category)
+                                    .items(categoriesNames)
+                                    .itemsCallback(new MaterialDialog.ListCallback() {
+                                        @Override
+                                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                            ContentValues values = new ContentValues();
+                                            values.put(DataBaseContract.Notes.COLUMN_NAME_CATEGORY, categories.get(which).getId());
+                                            String[] selectionArgs = { notes.get(position).getId() };
+                                            context.getContentResolver().update(
+                                                    DataBaseContract.Notes.CONTENT_URI,
+                                                    values, DataBaseContract.Notes._ID + " = ? ",
+                                                    selectionArgs
+                                            );
+                                            notes.get(position).setColor(categories.get(which).getColor());
+                                            notifyDataSetChanged();
+                                        }
+                                    })
+                                    .positiveText(android.R.string.cancel)
+                                    .show();
+                                break;
+                            case 1:
+                                
+                                break;
+                        }
+                    }
+                })
+                .positiveText(android.R.string.cancel)
+                .show();
     }
 
     public class NotesViewHolder extends RecyclerView.ViewHolder {

@@ -55,5 +55,9 @@
         <item>Dark</item>
     </string-array>
     <string name="settings_warning">Rerun app to apply settings</string>
-
+    <string name="action_choose">Choose action</string>
+    <string-array name="actions_category_send">
+        <item>Choose category</item>
+        <item>Send</item>
+    </string-array>
 </resources>

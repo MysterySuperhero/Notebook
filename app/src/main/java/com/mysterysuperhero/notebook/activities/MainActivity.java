@@ -122,8 +122,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
         primaryPreselect = DialogUtils.resolveColor(this, R.attr.colorPrimary);
-
-
     }
 
     @Override
