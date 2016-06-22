@@ -30,6 +30,7 @@ import com.mysterysuperhero.notebook.utils.Category;
 import com.mysterysuperhero.notebook.utils.FragmentsVisiblity;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.EventBusException;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
@@ -246,6 +247,12 @@ public class CategoriesFragment extends Fragment implements FragmentsVisiblity {
 
     @Override
     public void fragmentBecameVisible() {
+        try {
+            EventBus.getDefault().register(this);
+        } catch (EventBusException exception) {
+
+        }
+
         ((MainActivity) getActivity()).fab.setOnClickListener(null);
         ((MainActivity) getActivity()).fab.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -66,4 +66,9 @@
         <item>Светлая</item>
         <item>Темная</item>
     </string-array>
+
+    <string name="notes_tab">Записи</string>
+    <string name="categories_tab">Категории</string>
+
+    <string name="settings_warning">Для установки настроек, перезапустите приложение</string>
 </resources>

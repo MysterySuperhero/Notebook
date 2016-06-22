@@ -3,6 +3,8 @@ package com.mysterysuperhero.notebook.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +31,7 @@ import com.mysterysuperhero.notebook.database.DataBaseContract;
 import com.mysterysuperhero.notebook.events.CategoriesLoadedEvent;
 import com.mysterysuperhero.notebook.events.ColorChosenEvent;
 import com.mysterysuperhero.notebook.events.FilterChosenEvent;
+import com.mysterysuperhero.notebook.events.LanguageChangedEvent;
 import com.mysterysuperhero.notebook.events.NotesLoadedEvent;
 import com.mysterysuperhero.notebook.fragments.ViewPagerAdapter;
 import com.mysterysuperhero.notebook.utils.CategoriesGetter;
@@ -36,8 +40,10 @@ import com.mysterysuperhero.notebook.utils.FragmentsVisiblity;
 import com.mysterysuperhero.notebook.utils.SlidingTabLayout;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         ColorChooserDialog.ColorCallback {
@@ -45,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     ViewPager pager;
     ViewPagerAdapter adapter;
     SlidingTabLayout tabs;
-    CharSequence titles[] = {"Записи", "Категории"};
+    CharSequence titles[];
     int tabsCount = 2;
 
     SharedPreferences settings;
@@ -56,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final int CATEGORIES_LOADER = 1;
     public static final String APP_PREFERENCES = "mysettings";
     public static final String APP_PREFERENCES_FILTER = "filter"; // имя кота
+    public static final String APP_PREFERENCES_LOCALE = "locale"; // имя кота
 
     public int primaryPreselect;
 
@@ -66,6 +73,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(MainActivity.APP_PREFERENCES_FILTER, "-1");
+        editor.apply();
+        setLocale(settings.getString(APP_PREFERENCES_LOCALE, "ru"));
+
+        titles = new String[] {
+                getResources().getString(R.string.notes_tab),
+                getResources().getString(R.string.categories_tab)
+        };
         adapter = new ViewPagerAdapter(getSupportFragmentManager(), titles, tabsCount);
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(adapter);
@@ -103,12 +120,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         primaryPreselect = DialogUtils.resolveColor(this, R.attr.colorPrimary);
 
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         getSupportLoaderManager().initLoader(NOTES_LOADER, null, this);
         getSupportLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
-        settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(MainActivity.APP_PREFERENCES_FILTER, "-1");
-        editor.apply();
+//        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        getSupportLoaderManager().destroyLoader(NOTES_LOADER);
+        getSupportLoaderManager().destroyLoader(CATEGORIES_LOADER);
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
@@ -216,5 +244,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 })
                 .positiveText(android.R.string.cancel)
                 .show();
+    }
+
+//    @Subscribe(sticky = true)
+//    public void onLanguageChangedEvent(LanguageChangedEvent event) {
+//        if (settings != null) {
+//            SharedPreferences.Editor editor = settings.edit();
+//            editor.putString(MainActivity.APP_PREFERENCES_LOCALE, event.locale);
+//            editor.apply();
+//        }
+//    }
+
+    private void setLocale(String code) {
+        Locale myLocale = new Locale(code);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
     }
 }

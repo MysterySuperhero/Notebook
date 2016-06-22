@@ -9,13 +9,17 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.mysterysuperhero.notebook.R;
+import com.mysterysuperhero.notebook.events.LanguageChangedEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Locale;
 
@@ -52,24 +56,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             preference.setSummary(stringValue);
             switch (preference.getKey()) {
                 case LOCALE:
+                    String code = "";
                     switch ((String) value) {
                         case RUSSIAN:
                             myLocale = new Locale("ru");
-                            Resources res = getResources();
-                            DisplayMetrics dm = res.getDisplayMetrics();
-                            Configuration conf = res.getConfiguration();
-                            conf.locale = myLocale;
-                            res.updateConfiguration(conf, dm);
+                            code = "ru";
                             break;
                         case ENGLISH:
                             myLocale = new Locale("en");
-                            res = getResources();
-                            dm = res.getDisplayMetrics();
-                            conf = res.getConfiguration();
-                            conf.locale = myLocale;
-                            res.updateConfiguration(conf, dm);
+                            code = "en";
                             break;
                     }
+                    EventBus.getDefault().postSticky(new LanguageChangedEvent(code));
                     break;
                 case THEME:
                     System.out.println("________________________THEME_______________________");
@@ -115,16 +113,26 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         setupActionBar();
         addPreferencesFromResource(R.xml.pref_general);
         bindPreferenceSummaryToValue(findPreference("locale"));
         bindPreferenceSummaryToValue(findPreference("theme"));
+        Snackbar.make(SettingsActivity.this.getListView(), getString(R.string.settings_warning), Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
             finish();
             return true;
         }
@@ -137,6 +145,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         if (actionBar != null) {
             // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Subscribe
+    public void onLanguageChangedEvent(LanguageChangedEvent event) {
+        SharedPreferences settings = getSharedPreferences(MainActivity.APP_PREFERENCES, Context.MODE_PRIVATE);
+        if (settings != null) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString(MainActivity.APP_PREFERENCES_LOCALE, event.locale);
+            editor.apply();
         }
     }
 }

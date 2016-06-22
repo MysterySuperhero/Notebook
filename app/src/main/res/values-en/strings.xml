@@ -42,5 +42,18 @@
     <string name="title_activity_settings">Settings</string>
     <string name="pref_locale">Language</string>
     <string name="pref_themes">Themes</string>
+    <string name="notes_tab">Notes</string>
+    <string name="categories_tab">Categories</string>
+
+    <string-array name="locales_list_titles">
+        <item>Русский</item>
+        <item>English</item>
+    </string-array>
+
+    <string-array name="themes_list_titles">
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+    <string name="settings_warning">Rerun app to apply settings</string>
 
 </resources>

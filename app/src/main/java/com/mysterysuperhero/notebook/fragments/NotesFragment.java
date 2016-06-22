@@ -31,6 +31,7 @@ import com.mysterysuperhero.notebook.utils.FragmentsVisiblity;
 import com.mysterysuperhero.notebook.utils.Note;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.EventBusException;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
@@ -61,7 +62,6 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        EventBus.getDefault().register(this);
 
         notesView = (RecyclerView) getView().findViewById(R.id.notesRecyclerView);
         notesView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -72,6 +72,8 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
     @Override
     public void onResume() {
         super.onResume();
+        EventBus.getDefault().register(this);
+
         ((MainActivity) getActivity()).fab.setOnClickListener(null);
         ((MainActivity) getActivity()).fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,7 +211,7 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
             ArrayList<Note> notes = new ArrayList<>();
 
             if (this.itemsCount != 0) {
-                cursor.move(this.itemsCount); // - 1);
+                cursor.move(this.itemsCount - 1); // - 1);
             }
 
             do {
@@ -267,6 +269,12 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
 
     @Override
     public void fragmentBecameVisible() {
+        try {
+            EventBus.getDefault().register(this);
+        } catch (EventBusException exception) {
+
+        }
+
         ((MainActivity) getActivity()).fab.setOnClickListener(null);
         ((MainActivity) getActivity()).fab.setOnClickListener(new View.OnClickListener() {
             @Override
