@@ -126,9 +126,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         int id = item.getItemId();
         switch (id) {
             case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 break;
             case R.id.action_info:
-                Intent intent = new Intent(this, InfoActivity.class);
+                intent = new Intent(this, InfoActivity.class);
                 startActivity(intent);
                 break;
             case R.id.action_filter:
