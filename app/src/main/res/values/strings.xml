@@ -3,6 +3,10 @@
     <string name="action_settings">Настройки</string>
     <string name="action_info">О приложении</string>
 
+    <string name="action_filter">filter</string>
+    <string name="default_filter">Все</string>
+    <string name="action_filter_title">Выберите категорию:</string>
+
     <string name="action_add">Выберите то, что Вы хотите добавить</string>
     <string name="action_add_note">Запись</string>
     <string name="action_add_category">Категория</string>

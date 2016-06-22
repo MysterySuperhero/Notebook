@@ -25,10 +25,9 @@ import com.mysterysuperhero.notebook.activities.MainActivity;
 import com.mysterysuperhero.notebook.R;
 import com.mysterysuperhero.notebook.database.DataBaseContract;
 import com.mysterysuperhero.notebook.events.CategoriesLoadedEvent;
-import com.mysterysuperhero.notebook.events.ColorChoseEvent;
+import com.mysterysuperhero.notebook.events.ColorChosenEvent;
 import com.mysterysuperhero.notebook.utils.Category;
 import com.mysterysuperhero.notebook.utils.FragmentsVisiblity;
-import com.mysterysuperhero.notebook.utils.Note;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -227,7 +226,7 @@ public class CategoriesFragment extends Fragment implements FragmentsVisiblity {
     }
 
     @Subscribe
-    public void onColorChoseEvent(ColorChoseEvent event) {
+    public void onColorChoseEvent(ColorChosenEvent event) {
         String color = String.format("#%06X", (0xFFFFFF & event.color));
         ((CategoriesAdapter) categoriesView.getAdapter())
                 .categories.get(changedViewId).setColor(color);

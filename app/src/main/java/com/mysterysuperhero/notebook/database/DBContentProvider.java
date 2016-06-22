@@ -86,6 +86,12 @@ public class DBContentProvider extends ContentProvider {
                 sb.append("notes.category");
                 sb.append(" = ");
                 sb.append("categories._id");
+                if (selection != null) {
+                    sb.append(" AND ");
+                    sb.append("categories._id");
+                    sb.append(" = ");
+                    sb.append(selectionArgs[0]);
+                }
                 sb.append(")");
                 String table = sb.toString();
 
@@ -97,9 +103,13 @@ public class DBContentProvider extends ContentProvider {
                 notesProjection.put("categories.color", "categories.color AS color");
                 qb.setProjectionMap(notesProjection);
                 orderBy = DataBaseContract.Notes._ID + " ASC LIMIT 100";
-                if (selectionArgs != null) {
-                    qb.appendWhere(DataBaseContract.Notes._ID + "= ?");
-                }
+//                if (selection != null) {
+//                    qb.appendWhere(selection);
+//                } else {
+//                    if (selectionArgs != null) {
+//                        qb.appendWhere(DataBaseContract.Notes._ID + "= ?");
+//                    }
+//                }
                 break;
 
             case 2: // CATEGORIES

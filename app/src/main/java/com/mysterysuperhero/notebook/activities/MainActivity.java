@@ -1,10 +1,10 @@
 package com.mysterysuperhero.notebook.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
@@ -17,21 +17,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
-import com.afollestad.materialdialogs.color.CircleView;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
-import com.afollestad.materialdialogs.internal.ThemeSingleton;
 import com.afollestad.materialdialogs.util.DialogUtils;
 import com.mysterysuperhero.notebook.R;
 import com.mysterysuperhero.notebook.database.DataBaseContract;
 import com.mysterysuperhero.notebook.events.CategoriesLoadedEvent;
-import com.mysterysuperhero.notebook.events.ColorChoseEvent;
+import com.mysterysuperhero.notebook.events.ColorChosenEvent;
+import com.mysterysuperhero.notebook.events.FilterChosenEvent;
 import com.mysterysuperhero.notebook.events.NotesLoadedEvent;
 import com.mysterysuperhero.notebook.fragments.ViewPagerAdapter;
+import com.mysterysuperhero.notebook.utils.CategoriesGetter;
+import com.mysterysuperhero.notebook.utils.Category;
 import com.mysterysuperhero.notebook.utils.FragmentsVisiblity;
 import com.mysterysuperhero.notebook.utils.SlidingTabLayout;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         ColorChooserDialog.ColorCallback {
@@ -42,11 +48,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     CharSequence titles[] = {"Записи", "Категории"};
     int tabsCount = 2;
 
-    public FloatingActionButton fab;
+    SharedPreferences settings;
 
+    public FloatingActionButton fab;
     public static final String DEFAULT_COLOR = "#FFFFFF";
     public static final int NOTES_LOADER = 0;
     public static final int CATEGORIES_LOADER = 1;
+    public static final String APP_PREFERENCES = "mysettings";
+    public static final String APP_PREFERENCES_FILTER = "filter"; // имя кота
 
     public int primaryPreselect;
 
@@ -96,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         getSupportLoaderManager().initLoader(NOTES_LOADER, null, this);
         getSupportLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
+        settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -117,6 +127,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             case R.id.action_info:
                 Intent intent = new Intent(this, InfoActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.action_filter:
+                this.buildCategoryChooserDialog();
                 break;
             default:
                 return true;
@@ -164,12 +177,39 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onColorSelection(@NonNull ColorChooserDialog dialog, @ColorInt int selectedColor) {
-        EventBus.getDefault().post(new ColorChoseEvent(selectedColor));
+        EventBus.getDefault().post(new ColorChosenEvent(selectedColor));
 //        if (getSupportActionBar() != null)
 //            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(selectedColor));
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            getWindow().setStatusBarColor(CircleView.shiftColorDown(selectedColor));
 //            getWindow().setNavigationBarColor(selectedColor);
 //        }
+    }
+
+    public void buildCategoryChooserDialog() {
+        ArrayList<String> categoriesNames = new ArrayList<>();
+        categoriesNames.add(getResources().getString(R.string.default_filter));
+        final ArrayList<Category> categories = new ArrayList<>();
+        CategoriesGetter.getCategories(this, categoriesNames, categories);
+        new MaterialDialog.Builder(this)
+                .title(R.string.action_filter_title)
+                .items(categoriesNames)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        SharedPreferences.Editor editor = settings.edit();
+                        if (which != 0) {
+                            editor.putString(MainActivity.APP_PREFERENCES_FILTER, categories.get(which - 1).getId());
+                        } else {
+                            editor.putString(MainActivity.APP_PREFERENCES_FILTER, "-1");
+                        }
+                        editor.apply();
+                        EventBus.getDefault().post(
+                                new FilterChosenEvent(settings.getString(MainActivity.APP_PREFERENCES_FILTER, ""))
+                        );
+                    }
+                })
+                .positiveText(android.R.string.cancel)
+                .show();
     }
 }

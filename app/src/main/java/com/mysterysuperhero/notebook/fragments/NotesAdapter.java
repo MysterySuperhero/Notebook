@@ -116,6 +116,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         this.notes.addAll(newNotes);
     }
 
+    public void clearNotes() {
+        this.notes.clear();
+    }
+
     public Note getItemById(String id) {
         for(Note note : notes) {
             if (note.getId().equals(id))

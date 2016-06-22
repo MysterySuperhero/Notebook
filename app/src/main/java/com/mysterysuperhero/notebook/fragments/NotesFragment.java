@@ -23,6 +23,7 @@ import com.afollestad.materialdialogs.internal.ThemeSingleton;
 import com.mysterysuperhero.notebook.activities.MainActivity;
 import com.mysterysuperhero.notebook.R;
 import com.mysterysuperhero.notebook.database.DataBaseContract;
+import com.mysterysuperhero.notebook.events.FilterChosenEvent;
 import com.mysterysuperhero.notebook.events.NotesLoadedEvent;
 import com.mysterysuperhero.notebook.utils.FragmentsVisiblity;
 import com.mysterysuperhero.notebook.utils.Note;
@@ -220,6 +221,43 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
             ((NotesAdapter) this.notesView.getAdapter()).addToNotes(notes);
             ((NotesAdapter) this.notesView.getAdapter()).notifyDataSetChanged();
             this.itemsCount = this.notesView.getAdapter().getItemCount();
+        }
+    }
+
+    @Subscribe
+    public void onFilterChosenEvent(FilterChosenEvent event) {
+        String[] selectionArgs = null;
+        String selectionClause = null;
+        if (!event.categoryId.equals("-1")) {
+            selectionArgs = new String[]{event.categoryId};
+            selectionClause = DataBaseContract.Notes.COLUMN_NAME_CATEGORY + " = ? ";
+        }
+        Cursor cursor = getActivity().getContentResolver().query(
+                DataBaseContract.Notes.CONTENT_URI,
+                null,
+                selectionClause,
+                selectionArgs,
+                null
+        );
+        if (cursor.moveToFirst()) {
+            System.out.println("Notes cursor loaded!");
+            ArrayList<Note> notes = new ArrayList<>();
+
+            do {
+                notes.add(new Note(
+                        cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes._ID)),
+                        cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes.COLUMN_NAME_NAME)),
+                        cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes.COLUMN_NAME_TEXT)),
+                        cursor.getString(cursor.getColumnIndex(DataBaseContract.Notes.COLUMN_NAME_COLOR))
+                ));
+            } while (cursor.moveToNext());
+            ((NotesAdapter) this.notesView.getAdapter()).clearAndAddToNotes(notes);
+            ((NotesAdapter) this.notesView.getAdapter()).notifyDataSetChanged();
+            this.itemsCount = this.notesView.getAdapter().getItemCount();
+        } else {
+            ((NotesAdapter) this.notesView.getAdapter()).clearNotes();
+            ((NotesAdapter) this.notesView.getAdapter()).notifyDataSetChanged();
+            this.itemsCount = 0;
         }
     }
 
