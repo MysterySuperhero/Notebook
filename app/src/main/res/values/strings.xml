@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Notebook</string>
     <string name="action_settings">Настройки</string>
-    <string name="action_info">О разработчике</string>
+    <string name="action_info">О приложении</string>
 
     <string name="action_filter">filter</string>
     <string name="default_filter">Все</string>
@@ -36,13 +35,13 @@
     <string name="color_palette">Цветовая палитра</string>
     <string name="colors">Цвета</string>
 
-    <string name="title_activity_info">Информация о приложении</string>
+    <string name="title_activity_info">Информация о разработчике</string>
     <string name="app_info">Тут можно создавать заметки и категории! Батюшки!</string>
     <string name="developer_info">Назарков Дмитрий</string>
     <string name="developer_link">https://vk.com/nazarkovdmitri</string>
     <string name="title_activity_settings">Настройки</string>
 
-
+    <!-- Example General settings -->
     <string name="pref_locale">Язык</string>
     <string-array name="locales_list_titles">
         <item>Русский</item>
@@ -54,9 +53,8 @@
         <item>Светлая</item>
         <item>Темная</item>
     </string-array>
-
     <string name="notes_tab">Записи</string>
     <string name="categories_tab">Категории</string>
-
     <string name="settings_warning">Для установки настроек, перезапустите приложение</string>
+
 </resources>
