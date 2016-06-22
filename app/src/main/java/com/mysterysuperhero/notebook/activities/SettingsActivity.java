@@ -69,9 +69,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     }
                     EventBus.getDefault().postSticky(new LanguageChangedEvent(code));
                     break;
-                case THEME:
-                    System.out.println("________________________THEME_______________________");
-                    break;
             }
             return true;
         }
@@ -117,7 +114,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         setupActionBar();
         addPreferencesFromResource(R.xml.pref_general);
         bindPreferenceSummaryToValue(findPreference("locale"));
-        bindPreferenceSummaryToValue(findPreference("theme"));
         Snackbar.make(SettingsActivity.this.getListView(), getString(R.string.settings_warning), Snackbar.LENGTH_LONG).show();
     }
 

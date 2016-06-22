@@ -12,13 +12,5 @@
         android:positiveButtonText="@null"
         android:title="@string/pref_locale"/>
 
-    <ListPreference
-        android:defaultValue="Светлая"
-        android:entries="@array/themes_list_titles"
-        android:entryValues="@array/themes_list_titles"
-        android:key="theme"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:title="@string/pref_themes"/>
 
 </PreferenceScreen>

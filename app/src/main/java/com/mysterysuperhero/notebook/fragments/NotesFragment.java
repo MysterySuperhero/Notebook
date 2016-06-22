@@ -210,7 +210,7 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
             ArrayList<Note> notes = new ArrayList<>();
 
             if (this.itemsCount != 0) {
-                cursor.move(this.itemsCount - 1); // - 1);
+                cursor.move(this.itemsCount); // - 1);
             }
 
             do {
@@ -229,7 +229,6 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
 
     @Subscribe
     public void onFilterChosenEvent(FilterChosenEvent event) {
-
         // TODO : дублирование
         String[] selectionArgs = null;
         String selectionClause = null;

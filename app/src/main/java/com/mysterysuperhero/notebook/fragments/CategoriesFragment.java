@@ -163,7 +163,7 @@ public class CategoriesFragment extends Fragment implements FragmentsVisiblity {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         ContentValues values = new ContentValues();
                         values.put(DataBaseContract.Notes.COLUMN_NAME_NAME, nameEditText.getText().toString());
-                        values.put(DataBaseContract.Notes.COLUMN_NAME_COLOR, MainActivity.DEFAULT_COLOR);
+//                        values.put(DataBaseContract.Notes.COLUMN_NAME_COLOR, MainActivity.DEFAULT_COLOR);
 
                         String[] selectionArgs = { category.getId() };
                         getActivity().getContentResolver().update(DataBaseContract.Categories.CONTENT_URI, values,
@@ -181,6 +181,7 @@ public class CategoriesFragment extends Fragment implements FragmentsVisiblity {
         nameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
