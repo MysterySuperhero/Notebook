@@ -2,6 +2,7 @@ package com.mysterysuperhero.notebook.fragments;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -77,6 +78,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
             super(itemView);
             cardView = (CardView) itemView.findViewById(R.id.cardView);
             name = (TextView)itemView.findViewById(R.id.nameTextView);
+            Typeface tf = Typeface.createFromAsset(context.getAssets(),"font/Roboto-Light.ttf");
+            name.setTypeface(tf, Typeface.NORMAL);
         }
     }
 

@@ -3,6 +3,7 @@ package com.mysterysuperhero.notebook.fragments;
 import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -54,6 +55,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         } else {
             if (noteTextView.getText().length() < 25) {
                 noteTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+            } else {
+                noteTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
             }
         }
 
@@ -148,15 +151,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             cardView = (CardView) itemView.findViewById(R.id.cardView);
             name = (TextView)itemView.findViewById(R.id.nameTextView);
             text = (TextView)itemView.findViewById(R.id.textTextView);
-
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-//                    itemTouchedCallback.onFeedItemTouchedCallback(taskID, userName.getText().toString(),
-//                            shortDescription.getText().toString(), description, date.getText().toString(),
-//                            rating.getText().toString());
-                }
-            });
-
+            Typeface tf = Typeface.createFromAsset(context.getAssets(),"font/Roboto-Light.ttf");
+            text.setTypeface(tf, Typeface.NORMAL);
         }
     }
 
