@@ -54,4 +54,4 @@
  
 ![alt tag](https://pp.vk.me/c631517/v631517974/2f605/qbykw6-lyKY.jpg)
 
-<img src="https://pp.vk.me/c631517/v631517974/2f605/qbykw6-lyKY.jpg" width="48" height="100">
+<img src="https://pp.vk.me/c631517/v631517974/2f605/qbykw6-lyKY.jpg" height="500">
