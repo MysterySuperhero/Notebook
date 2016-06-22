@@ -2,6 +2,7 @@ package com.mysterysuperhero.notebook.fragments;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
@@ -154,7 +155,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                                     .show();
                                 break;
                             case 1:
-                                
+                                Intent sendIntent = new Intent();
+                                sendIntent.setAction(Intent.ACTION_SEND);
+                                sendIntent.putExtra(Intent.EXTRA_TEXT,
+                                        notes.get(position).getName()+ ": " + notes.get(position).getText());
+                                sendIntent.setType("text/plain");
+                                context.startActivity(sendIntent);
                                 break;
                         }
                     }
