@@ -1,6 +1,8 @@
 package com.mysterysuperhero.notebook.fragments;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -226,6 +228,8 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
 
     @Subscribe
     public void onFilterChosenEvent(FilterChosenEvent event) {
+
+        // TODO : дублирование
         String[] selectionArgs = null;
         String selectionClause = null;
         if (!event.categoryId.equals("-1")) {
@@ -270,9 +274,19 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
                 buildAddNoteDialog();
             }
         });
+        SharedPreferences settings = getActivity()
+                .getSharedPreferences(MainActivity.APP_PREFERENCES, Context.MODE_PRIVATE);
+        String filter = settings.getString(MainActivity.APP_PREFERENCES_FILTER, "");
+        // TODO : дублирование
+        String[] selectionArgs = null;
+        String selectionClause = null;
+        if (!filter.equals("-1")) {
+            selectionArgs = new String[]{ filter };
+            selectionClause = DataBaseContract.Notes.COLUMN_NAME_CATEGORY + " = ? ";
+        }
         Cursor cursor = getActivity().getContentResolver().query(
                 DataBaseContract.Notes.CONTENT_URI,
-                null, null, null, null
+                null, selectionClause, selectionArgs, null
         );
 
         if (cursor.moveToFirst()) {
