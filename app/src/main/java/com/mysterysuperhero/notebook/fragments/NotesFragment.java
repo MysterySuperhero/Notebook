@@ -84,8 +84,13 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
         EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
         super.onStop();
     }
 

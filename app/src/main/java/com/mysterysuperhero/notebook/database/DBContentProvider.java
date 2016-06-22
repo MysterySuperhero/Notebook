@@ -115,7 +115,7 @@ public class DBContentProvider extends ContentProvider {
             case 2: // CATEGORIES
                 qb.setTables(DataBaseContract.Categories.TABLE_NAME);
                 qb.setProjectionMap(categoriesProjection);
-                orderBy = DataBaseContract.Categories._ID + " ASC LIMIT 100";
+                orderBy = DataBaseContract.Categories._ID + " ASC ";
                 if (selectionArgs != null)
                     qb.appendWhere(DataBaseContract.Categories._ID + "= ?");
                 break;
