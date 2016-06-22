@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Notebook</string>
     <string name="action_settings">Настройки</string>
-    <string name="action_info">О приложении</string>
+    <string name="action_info">О разработчике</string>
 
     <string name="action_filter">filter</string>
     <string name="default_filter">Все</string>

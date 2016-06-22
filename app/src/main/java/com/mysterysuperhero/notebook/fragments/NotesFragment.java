@@ -117,11 +117,10 @@ public class NotesFragment extends Fragment implements FragmentsVisiblity {
 
         int widgetColor = ThemeSingleton.get().widgetColor;
 
-        MDTintHelper.setTint(noteEditText,
-                widgetColor == 0 ? ContextCompat.getColor(getActivity(), R.color.colorAccent) : widgetColor);
+        int color = widgetColor == 0 ? ContextCompat.getColor(getActivity(), R.color.colorAccent) : widgetColor;
+        MDTintHelper.setTint(noteEditText, color);
 
-        MDTintHelper.setTint(nameEditText,
-                widgetColor == 0 ? ContextCompat.getColor(getActivity(), R.color.colorAccent) : widgetColor);
+        MDTintHelper.setTint(nameEditText, color);
 
         dialog.show();
         positiveAction.setEnabled(false); // disabled by default
