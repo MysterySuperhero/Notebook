@@ -142,7 +142,7 @@ public class CategoriesFragment extends Fragment implements FragmentsVisiblity {
 
     public void buildChangeCategoryDialog(final Category category, final CategoriesAdapter adapter) {
         MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                .title(R.string.action_change_note_title)
+                .title(R.string.action_change_category_title)
                 .customView(R.layout.add_category_dialog, true)
                 .positiveText(R.string.action_change_save)
                 .negativeText(android.R.string.cancel)
